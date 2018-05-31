@@ -1,7 +1,15 @@
+*.so
 .Rproj.user
+
+## Qt Creator
+*.pro
+*.pro.user
+inst/doc
 .Rhistory
 .RData
 .Ruserdata
 src/*.o
 src/*.so
 src/*.dll
+src-i386/
+src-x64/
