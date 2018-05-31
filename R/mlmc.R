@@ -294,7 +294,7 @@ options('na.action' = current.na.action$na.action)
     if (respond_dep==1) parsstr=c("U","beta2","alpha","alpha_response") else {
     parsstr=c("U","beta2","alpha")
     }
-    mlmm_path=.libPaths("mlmm")
+    mlmm_path=.libPaths("mlm4omics")
     initvalue1=function () {
     setinitvalues(npred=npred,np=np,npred_miss=npred_miss,npred_sub=npred_sub,
     nmiss=nmiss,nsid=nsid)}
