@@ -124,7 +124,7 @@
 #'var2=abs(rnorm(800,0,1));treatment=c(rep(0,400),rep(1,400));
 #'var1=(1/0.85)*var2+2*treatment;
 #'geneid=rep(seq_len(50),16);
-#'sid=c(rep(seq_len(25),16),rep(seq_len(50)+25,16))
+#'sid=c(rep(seq_len(50),8),rep(seq_len(50)+50,8))
 #'cov1=rWishart(1,df=50,Sigma=diag(rep(1,50)))
 #'u=rnorm(50,0,1);mu=mvrnorm(n=1,mu=u,cov1[,,1])
 #'sdd=rgamma(1,shape=1,scale=1/10);
