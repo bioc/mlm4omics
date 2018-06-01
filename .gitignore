@@ -12,7 +12,7 @@ src/*.o
 src/*.so
 src/*.dll
 *.o
-src-i386/*.so
+*.so
 src-i386/*.dll
 src-x64/*.o
 src-x64/*.so
