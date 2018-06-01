@@ -8,13 +8,9 @@ inst/doc
 .Rhistory
 .RData
 .Ruserdata
-src/*.o
-src/*.so
 src/*.dll
 *.o
 *.so
 src-i386/*.dll
-src-x64/*.o
-src-x64/*.so
 src-x64/*.dll
 *.Rproj
