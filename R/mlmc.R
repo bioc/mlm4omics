@@ -84,9 +84,6 @@
 #'@param savefile A logical variable to indicate if the sampling files
 #'are to be saved.
 #'
-#'@param usefit A logical variable to indicate if the model use the
-#'existin gfit.
-#'
 #'@return Return of the function is the result fitted by stan. It will
 #'have the summarized parameters from all chains and summary results
 #'for each chain.
@@ -114,7 +111,7 @@
 #'formula_censor=censor~1,formula_subject=~var2,
 #'pdata=pdata,response_censorlim=0.05,
 #'respond_dep_missing=TRUE,pidname="geneid",sidname="sid",
-#'iterno=10,chains=2,savefile=FALSE,usefit=TRUE)
+#'iterno=10,chains=2,savefile=FALSE)
 #'}
 #'system.time(testfun())
 #'}
@@ -157,8 +154,7 @@
 #'pidname="geneid",sidname="sid",
 #'iterno=50,
 #'chains=2,
-#'savefile=FALSE,
-#'usefit=FALSE)
+#'savefile=FALSE)
 #'}
 #'@export
 
@@ -167,7 +163,7 @@ formula_subject, pdata, respond_dep_missing=TRUE,
 response_censorlim=NULL, pidname, sidname, prec_prior=NULL,
 alpha_prior=NULL, iterno=100, chains=3, thin=1, seed=125,
 algorithm="NUTS", warmup=floor(iterno/2), adapt_delta_value=0.90,
-savefile=FALSE, usefit=FALSE)
+savefile=FALSE)
     
 {current.na.action=options('na.action');options(na.action='na.pass')
     
@@ -299,40 +295,21 @@ options('na.action' = current.na.action$na.action)
     setinitvalues(npred=npred,np=np,npred_miss=npred_miss,npred_sub=npred_sub,
     nmiss=nmiss,nsid=nsid)}
     
-    if (usefit==TRUE) {
-        stanfit=stanmodels$mlmc_code
-        if (savefile==TRUE)  
-        fitmlmc=rstan::sampling(stanfit,data=prstan_data,iter=iterno,
-        init=initvalue1,
-        pars=parsstr,seed=seed,thin=thin,
-        algorithm=algorithm,warmup=warmup,chains=chains,
-        control=list(adapt_delta=adapt_delta_value),
-        sample_file=file.path(getwd(),"samples")) else {
-        fitmlmc=rstan::sampling(stanfit,data=prstan_data,iter=iterno,
-        init=initvalue1,
-        pars=parsstr, seed=seed, thin=thin,
-        algorithm=algorithm,warmup=warmup,chains=chains,
-        control=list(adapt_delta=adapt_delta_value),sample_file=NULL)
-        }
-        }  else {  
-        if (savefile==TRUE) 
-        fitmlmc=rstan::stan(file=file.path(mlmm_path,
-        "mlm4omics/src/stan_files/mlmc_code.stan"),
-        data=prstan_data, iter=iterno,init=initvalue1,pars=parsstr,
-        seed=seed,thin=thin,algorithm=algorithm,warmup=warmup,chains=chains,
-        control=list(adapt_delta=adapt_delta_value),
-        sample_file=file.path(getwd(),"samples"),save_dso=FALSE) else 
-        {
-        stanfit=stanmodels$mlmc_code
-        fitmlmc=rstan::stan(file=file.path(mlmm_path,
-        "mlm4omics/src/stan_files/mlmc_code.stan"),
-        data=prstan_data,
-        iter=iterno, init=initvalue1,pars=parsstr, seed=seed, thin=thin,
-        algorithm=algorithm,warmup=warmup,chains=chains,
-        control=list(adapt_delta=adapt_delta_value),sample_file=NULL,
-        save_dso=FALSE)}
-        }
-    
+    stanfit=stanmodels$mlmc_code
+    if (savefile==TRUE)  
+    fitmlmc=rstan::sampling(stanfit,data=prstan_data,iter=iterno,
+    init=initvalue1,
+    pars=parsstr,seed=seed,thin=thin,
+    algorithm=algorithm,warmup=warmup,chains=chains,
+    control=list(adapt_delta=adapt_delta_value),
+    sample_file=file.path(getwd(),"samples")) else {
+    fitmlmc=rstan::sampling(stanfit,data=prstan_data,iter=iterno,
+    init=initvalue1,
+    pars=parsstr, seed=seed, thin=thin,
+    algorithm=algorithm,warmup=warmup,chains=chains,
+    control=list(adapt_delta=adapt_delta_value),sample_file=NULL)
+    }
+        
     print(fitmlmc); 
     if (savefile==TRUE) 
     utils::write.csv(as.array(fitmlmc),file=file.path(getwd(),

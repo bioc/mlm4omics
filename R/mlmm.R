@@ -65,7 +65,6 @@
 #'
 #'@param thin rstan() parameter to define the frequency of iterations
 #'saved.
-
 #'@param seed random seed for rstan() function
 #'
 #'@param algorithm rstan() parameter which has three options c(NUTS,HMC,
@@ -76,19 +75,15 @@
 #'@param adapt_delta_value Adaptive delta value is an adaptation
 #'parameters for sampling algorithms,default is 0.85, value between
 #'0-1.
-
 #'@param savefile A logical variable to indicate if the sampling files
 #'are to be saved.
-#'
-#'@param usefit A logical variable to indicate if the model use the existing 
-#'fit.
 #'
 #'@return Return of the function is the result fitted by stan(). It
 #'will have the summarized parameters from all chains and summary
 #'results for each chain.
 #'Plot() function will return the visualization of the mean and parameters.
 #'@examples
-#'#\dontrun{
+#'
 #'library(MASS)
 #'set.seed(150)
 #'var2=abs(rnorm(1000,0,1));treatment=c(rep(0,500),rep(1,500))
@@ -112,16 +107,16 @@
 #'formula_subject=~treatment
 #'model3=mlmm(formula_completed=var1~var2+treatment,formula_missing=miss~var2,
 #'formula_subject=~treatment,pdata=pdata,respond_dep_missing=TRUE,
-#'pidname="geneid",sidname="sid",iterno=10,chains=2,usefit=TRUE,
+#'pidname="geneid",sidname="sid",iterno=10,chains=2,
 #'savefile=FALSE)
-#'#}
+#'
 #'@export
 
 mlmm=function(formula_completed, formula_missing, formula_subject, pdata,
 respond_dep_missing=TRUE, pidname, sidname, prec_prior=NULL,
 alpha_prior=NULL, iterno=100, chains=3, thin=1, seed=125,
 algorithm="NUTS", warmup=floor(iterno/2), adapt_delta_value=0.90,
-savefile=FALSE, usefit=FALSE)
+savefile=FALSE)
 
 {current.na.action=options('na.action');options(na.action='na.pass')
 
@@ -204,7 +199,7 @@ options('na.action' = current.na.action$na.action)
     )
     }
     
-    if (usefit==TRUE){
+    
         stanfit=stanmodels$mmlm_code
         if (savefile==TRUE) fitmlmm=rstan::sampling(stanfit,data=prstan_data,
         iter=iterno, pars=parsstr, seed=seed, thin=thin,
@@ -216,27 +211,9 @@ options('na.action' = current.na.action$na.action)
         pars=parsstr, seed=seed, thin=thin,
         algorithm=algorithm, warmup=warmup, chains=chains,
         control=list(adapt_delta=adapt_delta_value),
-        sample_file=NULL)}
-        }  else {
-
-        if (savefile==TRUE) 
-        fitmlmm=rstan::stan(file=file.path(mlmm_path,
-        "mlm4omics/src/stan_files/mmlm_code.stan"),
-        data=prstan_data,iter=iterno,
-        init=initvalue1, pars=parsstr, seed=seed, thin=thin,
-        algorithm=algorithm, warmup=warmup, chains=chains,
-        control=list(adapt_delta=adapt_delta_value),
-        sample_file=file.path(getwd(),"samples"),save_dso=FALSE) else {
-
-        fitmlmm=rstan::stan(file=file.path(mlmm_path,
-        "mlm4omics/src/stan_files/mmlm_code.stan"),
-        data=prstan_data, iter=iterno,
-        init=initvalue1, pars=parsstr, seed=seed, thin=thin,
-        algorithm=algorithm, warmup=warmup, chains=chains,
-        control=list(adapt_delta=adapt_delta_value),sample_file=NULL,
-        save_dso=FALSE)
-        }
-        }
+        sample_file=NULL)
+        }  
+           
     print(fitmlmm)
     if (savefile==TRUE) 
     utils::write.csv(as.array(fitmlmm),file=file.path(getwd(),

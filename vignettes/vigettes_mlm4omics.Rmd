@@ -151,10 +151,10 @@ library(mlm4omics)
 The following section provides examples using a simulated dataset: pdata.
 The examples include:
 
-1. Examples with no informative prior and using "usefit=TRUE" to call the
-Compiled model; and the default priors are used.
+1. Examples with no informative prior to call the compiled model;
+and the default priors are used.
 
-2. Example with informative priors and set "usefit=FALSE". 
+2. Example with informative priors. 
 
 When set up the formulas and parameters for using the mlmm() 
 and mlmc() functions, some instructions are as follows: 
@@ -220,10 +220,14 @@ example, to include subject-id for subject and this will provide the
 mean value for each subject.
 
 ### R examples for mlmc()
-#### Example 1a. Set usefit=TRUE to call complied codes
+#### Example 1a. Use default prior and call complied codes
 
-When set usefit=TRUE, we can have posterior samples based on the
-previous compiled codes.
+When no priors information, we can have posterior samples 
+based on the compiled codes, given the default flat prior 
+of precision matrix of the protein level covariates (a second 
+level unit in the multilevel model), and prior for regression 
+coefficients of the logistic regression predicting the missing 
+probability. 
 
 ```{r example 1a,eval=TRUE}
 library(mlm4omics)
@@ -232,7 +236,7 @@ formula_missing=miss~var2,
 formula_censor=censor~1, formula_subject=~sid, 
 pdata=pdata, response_censorlim=0.002, respond_dep_missing=TRUE, 
 pidname="geneid", sidname="sid", 
-iterno=100, chains=2, savefile=TRUE, usefit=TRUE)
+iterno=100, chains=2, savefile=TRUE)
 ```
 
 #### Example 1b-1c. Use a provided informative priors
@@ -247,19 +251,17 @@ regression for completed data.
 prec_prior is the precision matrix prior of regression coefficients
 -intercept and predictor (var2) in the completed data formula.
 
-Example 1d is to use the usefit=TRUE option given informative priors.
-This example is to have 1000 posterior samples based on the previous
-model. 
-
 ```{r example 1b-1c,eval=FALSE}
+#Example 1b
 model1=mlmc(formula_completed=var1~var2+treatment, 
 formula_missing=miss~var2, 
 formula_censor=censor~1, formula_subject=~sid, 
 pdata=pdata, response_censorlim=0.002,
 respond_dep_missing=TRUE, pidname="geneid", sidname="sid", 
 alpha_prior=c(0,0.001), iterno=100, chains=2, 
-savefile=TRUE, usefit=FALSE)
+savefile=TRUE)
 
+#Example 1c
 prec_example=matrix(c(0.01,0.001,0.001,0.01),nrow=2,ncol=2)
 
 model3=mlmc(formula_completed=var1~var2, 
@@ -267,33 +269,25 @@ formula_missing=miss~var2,
 formula_censor=censor~1, formula_subject=~sid+treatment, 
 pdata=pdata, response_censorlim=0.002, respond_dep_missing=TRUE,
 pidname="geneid", sidname="sid", prec_prior=prec_example,
-iterno=100, chains=2, savefile=TRUE, usefit=FALSE)
-
-model3b=mlmc(formula_completed=var1~var2, 
-formula_missing=miss~var2, 
-formula_censor=censor~1, formula_subject=~sid+treatment, 
-pdata=pdata, response_censorlim=0.002, respond_dep_missing=TRUE,
-pidname="geneid", sidname="sid", prec_prior=prec_example,
-iterno=1000, chains=2, savefile=TRUE, usefit=TRUE)
+iterno=1000, chains=2, savefile=TRUE)
 
 ```
-
 
 ### R examples for mlmm()
 Formulas for completed data, subject and missingness all require at
 least one variable.
 
-#### Example 2a. Set usefit=TRUE to call the complied code
+#### Example 2a. Use default prior 
 
 ```{r example 2a,eval=TRUE}
 model5=mlmm(formula_completed=var1~var2+treatment, 
 formula_missing=miss~var2, 
 formula_subject=~sid, pdata=pdata,
 respond_dep_missing=FALSE, pidname="geneid", sidname="sid",
-iterno=100, chains=2, savefile=TRUE, usefit=TRUE)
+iterno=100, chains=2, savefile=TRUE)
 ```
 
-#### Example 2b-2d. Provide informative priors
+#### Example 2b-2c. Provide informative priors
 The user define priors include:
 
 a) prec_prior : the precision matrix of the first-level parameters (var2 
@@ -307,27 +301,22 @@ prec_example=matrix(c(0.01,0.001,0.001,0.001,0.01,0.001,0.001,0.001,0.01),
 nrow=3,ncol=3)
 ```
 
-```{r example 2b, 2c and 2d,eval=FALSE}
+```{r example 2b, 2c,eval=FALSE}
+#Example 2b use both priors
 model4=mlmm(formula_completed=var1~var2+treatment, 
 formula_missing=miss~var2,
 formula_subject=~sid, pdata=pdata,
 respond_dep_missing=FALSE, pidname="geneid", sidname="sid",
 alpha_prior=c(0,0.001), prec_prior=prec_example,
-iterno=100, chains=2, savefile=TRUE, usefit=FALSE)
+iterno=100, chains=2, savefile=TRUE)
 
-#Example 2c. Use default priors 
+#Example 2c. Use alpha prior 
 model5=mlmm(formula_completed=var1~var2+treatment, 
 formula_missing=miss~var2,
 formula_subject=~sid+treatment, pdata=pdata,
-respond_dep_missing=FALSE, pidname="geneid",
-sidname="sid", iterno=100, chains=2, savefile=TRUE, usefit=FALSE)
+respond_dep_missing=FALSE, pidname="geneid",alpha_prior=c(0,0.001),
+sidname="sid", iterno=100, chains=2, savefile=TRUE)
 
-#Example 2d. set usefit=TRUE to call the compiled model from the previous run 
-model5b=mlmm(formula_completed=var1~var2+treatment, 
-formula_missing=miss~var2, 
-formula_subject=~sid+treatment, pdata=pdata, 
-respond_dep_missing=FALSE, pidname="geneid", 
-sidname="sid", iterno=1000, chains=2, savefile=TRUE, usefit=TRUE)
 ```
 
 
