@@ -5,10 +5,10 @@
 \title{The multilevel model to handle missing dependants: mlmm().}
 \usage{
 mlmm(formula_completed, formula_missing, formula_subject, pdata,
-  respond_dep_missing = TRUE, pidname, sidname, prec_prior = NULL,
-  alpha_prior = NULL, iterno = 100, chains = 3, thin = 1, seed = 125,
-  algorithm = "NUTS", warmup = floor(iterno/2), adapt_delta_value = 0.9,
-  savefile = FALSE, usefit = FALSE)
+    respond_dep_missing = TRUE, pidname, sidname, prec_prior = NULL,
+    alpha_prior = NULL, iterno = 100, chains = 3, thin = 1, seed = 125,
+    algorithm = "NUTS", warmup = floor(iterno/2), adapt_delta_value = 0.9,
+    savefile = FALSE)
 }
 \arguments{
 \item{formula_completed}{The main regression model formula. 
@@ -75,9 +75,6 @@ parameters for sampling algorithms,default is 0.85, value between
 
 \item{savefile}{A logical variable to indicate if the sampling files
 are to be saved.}
-
-\item{usefit}{A logical variable to indicate if the model use the existing 
-fit.}
 }
 \value{
 Return of the function is the result fitted by stan(). It
@@ -98,7 +95,7 @@ variable has no censored values while mlmc function include imputing
 censored values.
 }
 \examples{
-#\dontrun{
+
 library(MASS)
 set.seed(150)
 var2=abs(rnorm(1000,0,1));treatment=c(rep(0,500),rep(1,500))
@@ -122,7 +119,7 @@ formula_censor=censor~1
 formula_subject=~treatment
 model3=mlmm(formula_completed=var1~var2+treatment,formula_missing=miss~var2,
 formula_subject=~treatment,pdata=pdata,respond_dep_missing=TRUE,
-pidname="geneid",sidname="sid",iterno=10,chains=2,usefit=TRUE,
+pidname="geneid",sidname="sid",iterno=10,chains=2,
 savefile=FALSE)
-#}
+
 }

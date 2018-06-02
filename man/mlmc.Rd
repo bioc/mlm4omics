@@ -5,11 +5,11 @@
 \title{The multilevel function for missing and censored dependents: mlmc().}
 \usage{
 mlmc(formula_completed, formula_missing, formula_censor = NULL,
-  formula_subject, pdata, respond_dep_missing = TRUE,
-  response_censorlim = NULL, pidname, sidname, prec_prior = NULL,
-  alpha_prior = NULL, iterno = 100, chains = 3, thin = 1, seed = 125,
-  algorithm = "NUTS", warmup = floor(iterno/2), adapt_delta_value = 0.9,
-  savefile = FALSE, usefit = FALSE)
+    formula_subject, pdata, respond_dep_missing = TRUE,
+    response_censorlim = NULL, pidname, sidname, prec_prior = NULL,
+    alpha_prior = NULL, iterno = 100, chains = 3, thin = 1, seed = 125,
+    algorithm = "NUTS", warmup = floor(iterno/2), adapt_delta_value = 0.9,
+    savefile = FALSE)
 }
 \arguments{
 \item{formula_completed}{The main regression model formula; It has
@@ -82,9 +82,6 @@ parameters for sampling algorithms, default is 0.85, value between
 
 \item{savefile}{A logical variable to indicate if the sampling files
 are to be saved.}
-
-\item{usefit}{A logical variable to indicate if the model use the
-existin gfit.}
 }
 \value{
 Return of the function is the result fitted by stan. It will
@@ -124,7 +121,7 @@ formula_completed=var1~var2,formula_missing=miss~var2,
 formula_censor=censor~1,formula_subject=~var2,
 pdata=pdata,response_censorlim=0.05,
 respond_dep_missing=TRUE,pidname="geneid",sidname="sid",
-iterno=10,chains=2,savefile=FALSE,usefit=TRUE)
+iterno=10,chains=2,savefile=FALSE)
 }
 system.time(testfun())
 }
@@ -134,7 +131,7 @@ library(MASS)
 var2=abs(rnorm(800,0,1));treatment=c(rep(0,400),rep(1,400));
 var1=(1/0.85)*var2+2*treatment;
 geneid=rep(seq_len(50),16);
-sid=c(rep(seq_len(25),16),rep(seq_len(50)+25,16))
+sid=c(rep(seq_len(50),8),rep(seq_len(50)+50,8))
 cov1=rWishart(1,df=50,Sigma=diag(rep(1,50)))
 u=rnorm(50,0,1);mu=mvrnorm(n=1,mu=u,cov1[,,1])
 sdd=rgamma(1,shape=1,scale=1/10);
@@ -167,7 +164,6 @@ respond_dep_missing=TRUE,
 pidname="geneid",sidname="sid",
 iterno=50,
 chains=2,
-savefile=FALSE,
-usefit=FALSE)
+savefile=FALSE)
 }
 }
