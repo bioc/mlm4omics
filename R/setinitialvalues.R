@@ -60,30 +60,30 @@
 #'to re-parameterise response variable.  
 #'    
 #'@examples
-#'testexmp=setinitvalues(npred=2,np=3,npred_miss=3,npred_sub=2,nmiss=10,
+#'testexmp <- setinitvalues(npred=2,np=3,npred_miss=3,npred_sub=2,nmiss=10,
 #'nsid=30)
 #'@export
 
-setinitvalues=function(npred, np, npred_miss,
+setinitvalues <- function(npred, np, npred_miss,
 npred_sub, nmiss, nsid,
 censor_lim_upp=0.008, ita_a=1, ita_b=1/10, g_mu=0, g_sig=1,
 alpha_mu_u=0, alpha_mu_s=1, alpha_theta_a=1,
 alpha_theta_b=1/10, beta2_theta_a=1, beta2_theta_b=1/10)
     
 {return(list(alpha_response=censor_lim_upp,    
-pVAR=solve(rWishart(1, df=npred+1, 
-Sigma=as.matrix(Diagonal(npred)))[,,1]),    
-ita=rgamma(1,ita_a,ita_b), 
-U_latent=mvrnorm(np,mu=rep(0,npred),    
-Sigma=as.matrix(Diagonal(npred))),
-g=rnorm(npred,g_mu,g_sig), 
-alpha_mu=rnorm(npred_miss,alpha_mu_u,alpha_mu_s),    
-alpha_latent=rnorm(npred_miss,0,1),    
-alpha_theta=rgamma(npred_miss,alpha_theta_a,alpha_theta_b),    
-beta2_latent=mvrnorm(nsid,mu=rep(0,npred_sub),    
-Sigma=as.matrix(Diagonal(npred_sub))),     
-beta2_mu=mvrnorm(nsid,mu=rep(0,npred_sub),
-Sigma=as.matrix(Diagonal(npred_sub))),    
-beta2_theta=rgamma(npred_sub,1,1),    
-y_m_latent=rnorm(nmiss,0,1)))
+pVAR = solve(rWishart(1, df=npred+1, 
+Sigma = as.matrix(Diagonal(npred)))[,,1]),    
+ita = rgamma(1,ita_a,ita_b), 
+U_latent = mvrnorm(np,mu = rep(0,npred),    
+Sigma = as.matrix(Diagonal(npred))),
+g = rnorm(npred,g_mu,g_sig), 
+alpha_mu = rnorm(npred_miss,alpha_mu_u,alpha_mu_s),    
+alpha_latent = rnorm(npred_miss,0,1),    
+alpha_theta = rgamma(npred_miss,alpha_theta_a,alpha_theta_b),    
+beta2_latent = mvrnorm(nsid,mu = rep(0,npred_sub),    
+Sigma = as.matrix(Diagonal(npred_sub))),     
+beta2_mu = mvrnorm(nsid,mu = rep(0,npred_sub),
+Sigma = as.matrix(Diagonal(npred_sub))),    
+beta2_theta = rgamma(npred_sub,1,1),    
+y_m_latent = rnorm(nmiss,0,1)))
 }

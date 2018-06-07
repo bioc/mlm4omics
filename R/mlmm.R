@@ -86,96 +86,98 @@
 #'
 #'library(MASS)
 #'set.seed(150)
-#'var2=abs(rnorm(1000,0,1));treatment=c(rep(0,500),rep(1,500))
-#'geneid=rep(seq_len(20),50);sid=c(rep(seq_len(25),20),rep(seq_len(25)+25,20))
-#'cov1=rWishart(1,df=100,Sigma=diag(rep(1,100)))
-#'u=rnorm(100,0,1)
-#'mu=mvrnorm(n=1,mu=u,cov1[,,1])
-#'sdd=rgamma(1,shape=1,scale=1/10)
+#'var2 <- abs(rnorm(1000,0,1)); treatment <- c(rep(0,500),rep(1,500))
+#'geneid <- rep(seq_len(20),50); 
+#'sid <- c(rep(seq_len(25),20),rep(seq_len(25)+25,20))
+#'cov1 <- rWishart(1,df=100,Sigma <- diag(rep(1,100)))
+#'u <- rnorm(100,0,1)
+#'mu <- mvrnorm(n=1,mu=u,cov1[,,1])
+#'sdd <- rgamma(1,shape=1,scale=1/10)
 #'var1=(1/0.85)*var2+2*treatment
 #'for (i in seq_len(1000)) {var1[i]=var1[i]+rnorm(1,mu[geneid[i]],sdd)}
-#'miss_logit=var2*(-0.9)+var1*(0.01)
-#'probmiss=exp(miss_logit)/(exp(miss_logit)+1)
-#'miss=rbinom(1000,1,probmiss);table(miss)
-#'pdata=data.frame(var1,var2,treatment,miss,geneid,sid)
+#'miss_logit <- var2*(-0.9)+var1*(0.01)
+#'probmiss <- exp(miss_logit)/(exp(miss_logit)+1)
+#'miss <- rbinom(1000,1,probmiss); table(miss)
+#'pdata <- data.frame(var1,var2,treatment,miss,geneid,sid)
 #'for ( i in seq_len(1000)) if (pdata$miss[i]==1) pdata$var1[i]=NA;
-#'pidname="geneid";sidname="sid";
+#'pidname="geneid"; sidname="sid";
 #'#copy and paste the following formulas to the mmlm() function respectively
 #'formula_completed=var1~var2+treatment
 #'formula_missing=miss~var2
 #'formula_censor=censor~1
 #'formula_subject=~treatment
-#'model3=mlmm(formula_completed=var1~var2+treatment,formula_missing=miss~var2,
-#'formula_subject=~treatment,pdata=pdata,respond_dep_missing=TRUE,
-#'pidname="geneid",sidname="sid",iterno=10,chains=2,
+#'model3 <- mlmm(formula_completed=var1~var2+treatment, 
+#'formula_missing=miss~var2,
+#'formula_subject=~treatment, pdata=pdata, respond_dep_missing=TRUE,
+#'pidname="geneid", sidname="sid", iterno=10, chains=2,
 #'savefile=FALSE)
 #'
 #'@export
 
-mlmm=function(formula_completed, formula_missing, formula_subject, pdata,
+mlmm <- function(formula_completed, formula_missing, formula_subject, pdata,
 respond_dep_missing=TRUE, pidname, sidname, prec_prior=NULL,
 alpha_prior=NULL, iterno=100, chains=3, thin=1, seed=125,
 algorithm="NUTS", warmup=floor(iterno/2), adapt_delta_value=0.90,
 savefile=FALSE)
 
-{current.na.action=options('na.action');options(na.action='na.pass')
+{current.na.action <- options('na.action');options(na.action='na.pass')
 
-    t=terms(formula_completed)
-    mf=model.frame(t,pdata,na.action='na.pass')
-    mm=model.matrix(mf,pdata); t2=stats::terms(formula_missing)
-    mf2=model.frame(t2,pdata,na.action='na.pass')
-    mm2=model.matrix(mf2,pdata); missing=stats::model.response(mf2)
+    t <- terms(formula_completed)
+    mf <- model.frame(t,pdata,na.action='na.pass')
+    mm <- model.matrix(mf,pdata); t2 <- terms(formula_missing)
+    mf2 <- model.frame(t2,pdata,na.action='na.pass')
+    mm2 <- model.matrix(mf2,pdata); missing <- model.response(mf2)
 
-    if (!is.null(formula_subject)) {tt3=stats::terms(formula_subject)
-    mf3=model.frame(tt3,pdata,na.action='na.pass')
-    mm3=model.matrix(mf3,pdata)}
-    y_all=model.response(mf)
+    if (!is.null(formula_subject)) {tt3 <- terms(formula_subject)
+    mf3 <- model.frame(tt3,pdata,na.action='na.pass')
+    mm3 <- model.matrix(mf3,pdata)}
+    y_all <- model.response(mf)
 
-options('na.action' = current.na.action$na.action)
+options('na.action'  <-  current.na.action$na.action)
 
 #######################Prepare data;
-    ns=length(y_all)
-    nmiss=table(missing)[2]
-    nobs=ns-nmiss
+    ns <- length(y_all)
+    nmiss <- table(missing)[2]
+    nobs <- ns-nmiss
 
-    datamiss=subset(pdata,(missing==1))
-    dataobs=subset(pdata,(missing!=1))
+    datamiss <- subset(pdata,(missing==1))
+    dataobs <- subset(pdata,(missing!=1))
 
-    npred=dim(mm)[2]; npred_miss=dim(mm2)[2]; npred_sub=dim(mm3)[2]
-    sid=dataobs[,sidname]; sid_m=datamiss[,sidname]
-    nsid=length(table(pdata[,sidname]))
-    pid=dataobs[,pidname]
-    pid_m=datamiss[,pidname]
-    np=length(table(pdata[,pidname]))
+    npred <- dim(mm)[2]; npred_miss <- dim(mm2)[2]; npred_sub <- dim(mm3)[2]
+    sid <- dataobs[,sidname]; sid_m <- datamiss[,sidname]
+    nsid <- length(table(pdata[,sidname]))
+    pid <- dataobs[,pidname]
+    pid_m <- datamiss[,pidname]
+    np <- length(table(pdata[,pidname]))
 
-    pred=mm[(missing!=1),]
-    pred_miss=mm2[(missing!=1),]
-    pred_sub=mm3[(missing!=1),]
-    pred_m=mm[(missing==1),]
-    pred_miss_m=mm2[(missing==1),]
-    pred_sub_m=mm3[(missing==1),]
+    pred <- mm[(missing!=1),]
+    pred_miss <- mm2[(missing!=1),]
+    pred_sub <- mm3[(missing!=1),]
+    pred_m <- mm[(missing==1),]
+    pred_miss_m <- mm2[(missing==1),]
+    pred_sub_m <- mm3[(missing==1),]
 
-    miss_m=datamiss[,colnames(mf2)[1]]
-    miss_obs=dataobs[,colnames(mf2)[1]]
-    if (respond_dep_missing) respond_dep=1 else respond_dep=0
+    miss_m <- datamiss[,colnames(mf2)[1]]
+    miss_obs <- dataobs[,colnames(mf2)[1]]
+    if (respond_dep_missing) respond_dep <- 1 else respond_dep <- 0
 
 #data for prior;
-    R=as.matrix(Diagonal(npred))
+    R <- as.matrix(Diagonal(npred))
 
 #Assign default prior for precision matrix
 #of explanatory variables at the first leve;
-    if (is.null(prec_prior)){ prec_prior=matrix(nrow=npred,ncol=npred)
+    if (is.null(prec_prior)){ prec_prior <- matrix(nrow=npred,ncol=npred)
     for (i in seq_len(npred))
         for (j in seq_len(npred)) {
         if (i==j) prec_prior[i,j]=0.1 else prec_prior[i,j]=0.005}
         }
-    mn=rep(0,npred)
-    Sigma_sd=rep(10,npred)
+    mn <- rep(0,npred)
+    Sigma_sd <- rep(10,npred)
 
 #Assign default prior value for assoication of missing prob and variables
 
-    if (is.null(alpha_prior)) alpha_prior=rep(1,npred_miss)
-    prstan_data=list(
+    if (is.null(alpha_prior)) alpha_prior <- rep(1,npred_miss)
+    prstan_data <- list(
     nobs=nobs, nmiss=nmiss, nsid=nsid, np=np, npred=npred,
     npred_miss=npred_miss, npred_sub=npred_sub,
     respond_dep=respond_dep, y=y_all[(missing!=1)],
@@ -186,10 +188,10 @@ options('na.action' = current.na.action$na.action)
     R=R, Sigma_sd=Sigma_sd, mn=mn,
     prec_prior=prec_prior, alpha_prior=alpha_prior)
     if (respond_dep==1) 
-    parsstr=c("U","beta2","alpha","alpha_response") else {
-    parsstr=c("U","beta2","alpha")
+    parsstr <- c("U","beta2","alpha","alpha_response") else {
+    parsstr <- c("U","beta2","alpha")
     }
-    mlmm_path=.libPaths("mlm4omics")
+    
     initvalue1=function () {
     setinitvalues(
     npred=npred, np=np,
@@ -200,20 +202,20 @@ options('na.action' = current.na.action$na.action)
     }
     
     
-        stanfit=stanmodels$mmlm_code
-        if (savefile==TRUE) fitmlmm=rstan::sampling(stanfit,data=prstan_data,
-        iter=iterno, pars=parsstr, seed=seed, thin=thin,
+        stanfit <- stanmodels$mmlm_code
+        if (savefile==TRUE) fitmlmm <- rstan::sampling(stanfit,data=prstan_data,
+        iter=iterno, pars=parsstr, seed=seed, thin=thin, init=initvalue1,
         algorithm=algorithm, warmup=warmup, chains=chains,
         control=list(adapt_delta=adapt_delta_value),
-        sample_file=file.path(getwd(),"samples")) else {
+        sample_file = file.path(getwd(),"samples")) else {
 
-        fitmlmm=rstan::sampling(stanfit,data=prstan_data,iter=iterno,
-        pars=parsstr, seed=seed, thin=thin,
+        fitmlmm <- rstan::sampling(stanfit,data=prstan_data, iter=iterno,
+        pars=parsstr, seed=seed, thin=thin, init=initvalue1,
         algorithm=algorithm, warmup=warmup, chains=chains,
         control=list(adapt_delta=adapt_delta_value),
         sample_file=NULL)
         }  
-           
+    
     print(fitmlmm)
     if (savefile==TRUE) 
     utils::write.csv(as.array(fitmlmm),file=file.path(getwd(),

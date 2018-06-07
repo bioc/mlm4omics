@@ -98,28 +98,30 @@ censored values.
 
 library(MASS)
 set.seed(150)
-var2=abs(rnorm(1000,0,1));treatment=c(rep(0,500),rep(1,500))
-geneid=rep(seq_len(20),50);sid=c(rep(seq_len(25),20),rep(seq_len(25)+25,20))
-cov1=rWishart(1,df=100,Sigma=diag(rep(1,100)))
-u=rnorm(100,0,1)
-mu=mvrnorm(n=1,mu=u,cov1[,,1])
-sdd=rgamma(1,shape=1,scale=1/10)
+var2 <- abs(rnorm(1000,0,1)); treatment <- c(rep(0,500),rep(1,500))
+geneid <- rep(seq_len(20),50); 
+sid <- c(rep(seq_len(25),20),rep(seq_len(25)+25,20))
+cov1 <- rWishart(1,df=100,Sigma <- diag(rep(1,100)))
+u <- rnorm(100,0,1)
+mu <- mvrnorm(n=1,mu=u,cov1[,,1])
+sdd <- rgamma(1,shape=1,scale=1/10)
 var1=(1/0.85)*var2+2*treatment
 for (i in seq_len(1000)) {var1[i]=var1[i]+rnorm(1,mu[geneid[i]],sdd)}
-miss_logit=var2*(-0.9)+var1*(0.01)
-probmiss=exp(miss_logit)/(exp(miss_logit)+1)
-miss=rbinom(1000,1,probmiss);table(miss)
-pdata=data.frame(var1,var2,treatment,miss,geneid,sid)
+miss_logit <- var2*(-0.9)+var1*(0.01)
+probmiss <- exp(miss_logit)/(exp(miss_logit)+1)
+miss <- rbinom(1000,1,probmiss); table(miss)
+pdata <- data.frame(var1,var2,treatment,miss,geneid,sid)
 for ( i in seq_len(1000)) if (pdata$miss[i]==1) pdata$var1[i]=NA;
-pidname="geneid";sidname="sid";
+pidname="geneid"; sidname="sid";
 #copy and paste the following formulas to the mmlm() function respectively
 formula_completed=var1~var2+treatment
 formula_missing=miss~var2
 formula_censor=censor~1
 formula_subject=~treatment
-model3=mlmm(formula_completed=var1~var2+treatment,formula_missing=miss~var2,
-formula_subject=~treatment,pdata=pdata,respond_dep_missing=TRUE,
-pidname="geneid",sidname="sid",iterno=10,chains=2,
+model3 <- mlmm(formula_completed=var1~var2+treatment, 
+formula_missing=miss~var2,
+formula_subject=~treatment, pdata=pdata, respond_dep_missing=TRUE,
+pidname="geneid", sidname="sid", iterno=10, chains=2,
 savefile=FALSE)
 
 }

@@ -91,22 +91,22 @@
 #'
 #'@examples
 #'\dontshow{
-#'testfun=function()
+#'testfun <- function()
 #'{set.seed(100)
-#'var2=abs(rnorm(50,0,1))
-#'var1=(1/0.85)*var2;
-#'geneid=rep(c(1:10),5);sid=c(rep(c(1:25),2),rep(c(26:50),2));
-#'censor=rep(0,50)
-#'pidname="geneid";sidname="sid";
-#'miss_logit=var2*(-0.9);
-#'miss=rbinom(50,1,exp(miss_logit)/(exp(miss_logit)+1));
-#'censor=rep(0,50)
+#'var2 <- abs(rnorm(50,0,1))
+#'var1 <- (1/0.85)*var2;
+#'geneid <- rep(c(1:10),5); sid <- c(rep(c(1:25),2),rep(c(26:50),2));
+#'censor <- rep(0,50)
+#'pidname <- "geneid"; sidname <-"sid";
+#'miss_logit <- var2*(-0.9);
+#'miss <- rbinom(50,1,exp(miss_logit)/(exp(miss_logit)+1));
+#'censor <- rep(0,50)
 #'for (i in seq_len(50)) {if (var1[i]<0.05) censor[i]=1}
 #'for ( i in seq_len(50)) {if ((miss[i]==1) & (censor[i]==1)) miss[i]=0};
 #'for ( i in seq_len(50)) {if (miss[i]==1) var1[i]=NA;
 #'if (censor[i]==1) var1[i]=0.05}
-#'pdata=data.frame(var1,var2,miss,censor,geneid,sid)
-#'model1=mlmc(
+#'pdata <- data.frame(var1,var2,miss,censor,geneid,sid)
+#'model1 <- mlmc(
 #'formula_completed=var1~var2,formula_missing=miss~var2,
 #'formula_censor=censor~1,formula_subject=~var2,
 #'pdata=pdata,response_censorlim=0.05,
@@ -118,19 +118,19 @@
 #'\dontrun{
 #'set.seed(150)
 #'library(MASS)
-#'var2=abs(rnorm(800,0,1));treatment=c(rep(0,400),rep(1,400));
-#'var1=(1/0.85)*var2+2*treatment;
-#'geneid=rep(seq_len(50),16);
-#'sid=c(rep(seq_len(50),8),rep(seq_len(50)+50,8))
-#'cov1=rWishart(1,df=50,Sigma=diag(rep(1,50)))
-#'u=rnorm(50,0,1);mu=mvrnorm(n=1,mu=u,cov1[,,1])
-#'sdd=rgamma(1,shape=1,scale=1/10);
-#'for (i in seq_len(800)) {var1[i]=var1[i]+rnorm(1,mu[geneid[i]],sdd)}
-#'miss_logit=var2*(-0.9)+var1*(0.001);
-#'miss=rbinom(800,1,exp(miss_logit)/(exp(miss_logit)+1));
-#'censor=rep(0,800)
+#'var2 <- abs(rnorm(800,0,1)); treatment <- c(rep(0,400), rep(1,400));
+#'var1 <- (1/0.85)*var2+2*treatment;
+#'geneid <- rep(seq_len(50),16);
+#'sid <- c(rep(seq_len(50),8), rep(seq_len(50)+50,8))
+#'cov1 <- rWishart(1,df=50, Sigma <- diag(rep(1,50)))
+#'u <- rnorm(50,0,1);mu <- mvrnorm(n=1, mu=u, cov1[,,1])
+#'sdd <- rgamma(1, shape=1, scale=1/10);
+#'for (i in seq_len(800)) {var1[i] <- var1[i]+rnorm(1, mu[geneid[i]], sdd)}
+#'miss_logit <- var2*(-0.9)+var1*(0.001);
+#'miss <- rbinom(800, 1, exp(miss_logit)/(exp(miss_logit)+1));
+#'censor <- rep(0,800)
 #'for (i in seq_len(800)) {if (var1[i]<0.002) censor[i]=1}
-#'pdata=data.frame(var1,var2,treatment,miss,censor,geneid,sid);
+#'pdata <- data.frame(var1, var2, treatment, miss, censor, geneid, sid);
 #'for ( i in seq_len(800)) 
 #'{if ((pdata$miss[i]==1) & (pdata$censor[i]==1)) pdata$miss[i]=0};
 #'for ( i in seq_len(800)) {
@@ -144,7 +144,7 @@
 #'formula_subject=~treatment;
 #'response_censorlim=0.002;
 #'
-#'model1=mlmc(formula_completed=var1~var2+treatment,
+#'model1 <- mlmc(formula_completed=var1~var2+treatment,
 #'formula_missing=miss~var2,
 #'formula_censor=censor~1,
 #'formula_subject=~treatment,
@@ -158,110 +158,110 @@
 #'}
 #'@export
 
-mlmc=function(formula_completed, formula_missing, formula_censor=NULL,
+mlmc <- function(formula_completed, formula_missing, formula_censor=NULL,
 formula_subject, pdata, respond_dep_missing=TRUE,
 response_censorlim=NULL, pidname, sidname, prec_prior=NULL,
 alpha_prior=NULL, iterno=100, chains=3, thin=1, seed=125,
 algorithm="NUTS", warmup=floor(iterno/2), adapt_delta_value=0.90,
 savefile=FALSE)
     
-{current.na.action=options('na.action');options(na.action='na.pass')
+{current.na.action <- options('na.action'); options(na.action='na.pass')
     
-    t=terms(formula_completed)
-    mf=model.frame(t,pdata,na.action='na.pass')
-    mm=model.matrix(mf,pdata)
+    t <- terms(formula_completed)
+    mf <- model.frame(t, pdata, na.action='na.pass')
+    mm <- model.matrix(mf, pdata)
     
-    t2=terms(formula_missing)
-    mf2=model.frame(t2,pdata,na.action='na.pass')
-    mm2=model.matrix(mf2,pdata)
-    missing=model.response(mf2)
+    t2 <- terms(formula_missing)
+    mf2 <- model.frame(t2, pdata, na.action='na.pass')
+    mm2 <- model.matrix(mf2, pdata)
+    missing <- model.response(mf2)
     
     if (!is.null(formula_subject))
     {
-    tt3=terms(formula_subject);
-    mf3=model.frame(tt3,pdata,na.action='na.pass');
-    mm3=model.matrix(mf3,pdata)} else {
+    tt3 <- terms(formula_subject);
+    mf3 <- model.frame(tt3, pdata, na.action='na.pass');
+    mm3 <- model.matrix(mf3, pdata)} else {
     stop("No subject formula defined")}
     
     if (!is.null(formula_censor)){
-    tt4=terms(formula_censor);
-    mf4=model.frame(tt4,pdata,na.action='na.pass');
-    mm4=model.matrix(mf4,pdata);
-    censor=model.response(mf4)
+    tt4 <- terms(formula_censor);
+    mf4 <- model.frame(tt4, pdata, na.action='na.pass');
+    mm4 <- model.matrix(mf4, pdata);
+    censor <- model.response(mf4)
     } else ncensor=0;
     
     if (!is.null(response_censorlim))
-    censor_lim=response_censorlim else {
+    censor_lim <- response_censorlim else {
     stop("No response censor limit defined")
     }
     
-    y_all=model.response(mf)
+    y_all <- model.response(mf)
     
 options('na.action' = current.na.action$na.action)
     
     #unit test detect errors for censor and missing
-    checkt=table(missing,censor)
+    checkt <- table(missing,censor)
     if (checkt[4]>0) 
     stop("responses have overlapped definition in censor and missing");
 #######################Prepare data
-    ns=length(y_all)
-    if (!is.null(formula_censor)) ncensor=table(censor)[2]
-    nmiss=table(missing)[2]
-    nobs=ns-ncensor-nmiss
+    ns <- length(y_all)
+    if (!is.null(formula_censor)) ncensor <- table(censor)[2]
+    nmiss <- table(missing)[2]
+    nobs <- ns-ncensor-nmiss
     
-    datamiss=subset(pdata,(missing==1))
-    dataobs=subset(pdata,(missing!=1 & censor!=1))
-    datacen=subset(pdata,(censor==1))
+    datamiss <- subset(pdata, (missing==1))
+    dataobs <- subset(pdata, (missing!=1 & censor!=1))
+    datacen <- subset(pdata, (censor==1))
     
-    if (is.null(dim(mm))) npred=1 else npred=dim(mm)[2]
-    if (is.null(dim(mm2))) npred_miss=1 else npred_miss=dim(mm2)[2]
-    if (is.null(dim(mm3))) npred_sub=1 else npred_sub=dim(mm3)[2]
+    if (is.null(dim(mm))) npred <- 1 else npred <- dim(mm)[2]
+    if (is.null(dim(mm2))) npred_miss <- 1 else npred_miss <- dim(mm2)[2]
+    if (is.null(dim(mm3))) npred_sub <- 1 else npred_sub <- dim(mm3)[2]
     
-    sid=dataobs[,sidname]
-    sid_m=datamiss[,sidname]
-    nsid=length(table(pdata[,sidname]))
-    pid=dataobs[,pidname]
-    pid_m=datamiss[,pidname]
+    sid <- dataobs[,sidname]
+    sid_m <- datamiss[,sidname]
+    nsid <- length(table(pdata[,sidname]))
+    pid <- dataobs[,pidname]
+    pid_m <- datamiss[,pidname]
     
-    np=length(table(pdata[,pidname]))
-    pred=as.matrix(mm[(missing!=1 & censor!=1),]) 
-    pred_miss=as.matrix(mm2[(missing!=1 & censor!=1),])
-    pred_sub=as.matrix(mm3[(missing!=1 & censor!=1),])
-    pred_m=as.matrix(mm[(missing==1),])
-    pred_miss_m=as.matrix(mm2[(missing==1),])
-    pred_sub_m=as.matrix(mm3[(missing==1),])
+    np <- length(table(pdata[,pidname]))
+    pred <- as.matrix(mm[(missing!=1 & censor!=1),]) 
+    pred_miss <- as.matrix(mm2[(missing!=1 & censor!=1),])
+    pred_sub <- as.matrix(mm3[(missing!=1 & censor!=1),])
+    pred_m <- as.matrix(mm[(missing==1),])
+    pred_miss_m <- as.matrix(mm2[(missing==1),])
+    pred_sub_m <- as.matrix(mm3[(missing==1),])
     
     if ((!is.null(formula_censor)))
-    {npred_c=dim(mm4)[2]
-    sid_c=datacen[,sidname]
-    pid_c=datacen[,pidname]
-    np_c=length(table(pid_c))
-    pred_c=as.matrix(mm[(censor==1),])
-    pred_sub_c=as.matrix(mm3[(censor==1),])
+    {npred_c <- dim(mm4)[2]
+    sid_c <- datacen[,sidname]
+    pid_c <- datacen[,pidname]
+    np_c <- length(table(pid_c))
+    pred_c <- as.matrix(mm[(censor==1),])
+    pred_sub_c <- as.matrix(mm3[(censor==1),])
     }
     
-    miss_m=datamiss[,colnames(mf2)[1]]
-    miss_obs=dataobs[,colnames(mf2)[1]]
-    if (respond_dep_missing) respond_dep=1 else respond_dep=0
+    miss_m <- datamiss[,colnames(mf2)[1]]
+    miss_obs <- dataobs[,colnames(mf2)[1]]
+    if (respond_dep_missing) respond_dep <- 1 else respond_dep <- 0
     
     #data for prior
-    R=as.matrix(Diagonal(npred))
+    R <- as.matrix(Diagonal(npred))
     
     #Assign default prior for precision matrix 
     #of explnatory variables at the first leve
     if (is.null(prec_prior)){
-    prec_prior=matrix(nrow=npred,ncol=npred)
+    prec_prior <- matrix(nrow=npred, ncol=npred)
     for ( i in seq_len(npred))
     for (j in seq_len(npred))
     {if (i==j) prec_prior[i,j]=0.1 else prec_prior[i,j]=0.005}
     }
-    mn=rep(0,npred)
-    Sigma_sd=as.vector(rep(10,npred))
+    mn <- rep(0,npred)
+    Sigma_sd <- as.vector(rep(10, npred))
     #Assign default prior value for assoication between missing prob 
     #& variables
-    if (is.null(alpha_prior)) alpha_prior=rep(0,npred_miss)
+    if (is.null(alpha_prior)) alpha_prior <- rep(0, npred_miss)
     if ((!is.null(formula_censor))) {
-    prstan_data=list(
+    prstan_data <- list(
     nobs=nobs, nmiss=nmiss, ncensor=ncensor, nsid=nsid, np=np,
     npred=npred, npred_miss=npred_miss, npred_sub=npred_sub,
     censor_lim=censor_lim, respond_dep=respond_dep,
@@ -272,9 +272,9 @@ options('na.action' = current.na.action$na.action)
     miss_m=miss_m, sid_c=sid_c, pid_c=pid_c, pred_c=pred_c, 
     pred_sub_c=pred_sub_c, npred_c=npred_c, 
     R=R,Sigma_sd=Sigma_sd, mn=mn,
-    prec_prior=prec_prior,alpha_prior=alpha_prior)
+    prec_prior=prec_prior, alpha_prior=alpha_prior)
     } else {
-    prstan_data=list(
+    prstan_data <- list(
     nobs=nobs, nmiss=nmiss, ncensor=ncensor, nsid=nsid, np=np,
     npred=npred, npred_miss=npred_miss, npred_sub=npred_sub, 
     censor_lim=censor_lim, respond_dep=respond_dep, 
@@ -283,31 +283,33 @@ options('na.action' = current.na.action$na.action)
     sid_m=sid_m, pid_m=pid_m, pred_m=pred_m, 
     pred_miss_m=pred_miss_m, pred_sub_m=pred_sub_m, miss_m=miss_m,
     sid_c=0, pid_c=0,
-    pred_c=matrix(nrow=1,ncol=1), pred_sub_c=matrix(nrow=1,ncol=1), npred_c=0,
-    R=R,Sigma_sd=Sigma_sd,mn=mn,
-    prec_prior=prec_prior,alpha_prior=alpha_prior)
+    pred_c <- matrix(nrow=1,ncol=1), pred_sub_c <- matrix(nrow=1,ncol=1),
+    npred_c=0,
+    R=R,Sigma_sd=Sigma_sd, mn=mn,
+    prec_prior=prec_prior, alpha_prior=alpha_prior)
     }
-    if (respond_dep==1) parsstr=c("U","beta2","alpha","alpha_response") else {
-    parsstr=c("U","beta2","alpha")
+    if (respond_dep==1){ 
+    parsstr <- c("U","beta2","alpha","alpha_response")} else {
+    parsstr <- c("U","beta2","alpha")
     }
-    mlmm_path=.libPaths("mlm4omics")
-    initvalue1=function () {
-    setinitvalues(npred=npred,np=np,npred_miss=npred_miss,npred_sub=npred_sub,
-    nmiss=nmiss,nsid=nsid)}
     
-    stanfit=stanmodels$mlmc_code
+    initvalue1=function () {
+    setinitvalues(npred=npred, np=np, npred_miss=npred_miss,
+    npred_sub=npred_sub, nmiss=nmiss, nsid=nsid)}
+    
+    stanfit <- stanmodels$mlmc_code
     if (savefile==TRUE)  
-    fitmlmc=rstan::sampling(stanfit,data=prstan_data,iter=iterno,
-    init=initvalue1,
-    pars=parsstr,seed=seed,thin=thin,
-    algorithm=algorithm,warmup=warmup,chains=chains,
-    control=list(adapt_delta=adapt_delta_value),
-    sample_file=file.path(getwd(),"samples")) else {
-    fitmlmc=rstan::sampling(stanfit,data=prstan_data,iter=iterno,
+    fitmlmc <- rstan::sampling(stanfit, data=prstan_data, iter=iterno,
     init=initvalue1,
     pars=parsstr, seed=seed, thin=thin,
-    algorithm=algorithm,warmup=warmup,chains=chains,
-    control=list(adapt_delta=adapt_delta_value),sample_file=NULL)
+    algorithm=algorithm, warmup=warmup, chains=chains,
+    control=list(adapt_delta=adapt_delta_value),
+    sample_file = file.path(getwd(), "samples")) else {
+    fitmlmc <- rstan::sampling(stanfit, data=prstan_data, iter=iterno,
+    init=initvalue1,
+    pars=parsstr, seed=seed, thin=thin,
+    algorithm=algorithm, warmup=warmup, chains=chains,
+    control=list(adapt_delta=adapt_delta_value), sample_file=NULL)
     }
         
     print(fitmlmc); 

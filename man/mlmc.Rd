@@ -101,22 +101,22 @@ for the censored response are outputted as part of the parameters.
 }
 \examples{
 \dontshow{
-testfun=function()
+testfun <- function()
 {set.seed(100)
-var2=abs(rnorm(50,0,1))
-var1=(1/0.85)*var2;
-geneid=rep(c(1:10),5);sid=c(rep(c(1:25),2),rep(c(26:50),2));
-censor=rep(0,50)
-pidname="geneid";sidname="sid";
-miss_logit=var2*(-0.9);
-miss=rbinom(50,1,exp(miss_logit)/(exp(miss_logit)+1));
-censor=rep(0,50)
+var2 <- abs(rnorm(50,0,1))
+var1 <- (1/0.85)*var2;
+geneid <- rep(c(1:10),5); sid <- c(rep(c(1:25),2),rep(c(26:50),2));
+censor <- rep(0,50)
+pidname <- "geneid"; sidname <-"sid";
+miss_logit <- var2*(-0.9);
+miss <- rbinom(50,1,exp(miss_logit)/(exp(miss_logit)+1));
+censor <- rep(0,50)
 for (i in seq_len(50)) {if (var1[i]<0.05) censor[i]=1}
 for ( i in seq_len(50)) {if ((miss[i]==1) & (censor[i]==1)) miss[i]=0};
 for ( i in seq_len(50)) {if (miss[i]==1) var1[i]=NA;
 if (censor[i]==1) var1[i]=0.05}
-pdata=data.frame(var1,var2,miss,censor,geneid,sid)
-model1=mlmc(
+pdata <- data.frame(var1,var2,miss,censor,geneid,sid)
+model1 <- mlmc(
 formula_completed=var1~var2,formula_missing=miss~var2,
 formula_censor=censor~1,formula_subject=~var2,
 pdata=pdata,response_censorlim=0.05,
@@ -128,19 +128,19 @@ system.time(testfun())
 \dontrun{
 set.seed(150)
 library(MASS)
-var2=abs(rnorm(800,0,1));treatment=c(rep(0,400),rep(1,400));
-var1=(1/0.85)*var2+2*treatment;
-geneid=rep(seq_len(50),16);
-sid=c(rep(seq_len(50),8),rep(seq_len(50)+50,8))
-cov1=rWishart(1,df=50,Sigma=diag(rep(1,50)))
-u=rnorm(50,0,1);mu=mvrnorm(n=1,mu=u,cov1[,,1])
-sdd=rgamma(1,shape=1,scale=1/10);
-for (i in seq_len(800)) {var1[i]=var1[i]+rnorm(1,mu[geneid[i]],sdd)}
-miss_logit=var2*(-0.9)+var1*(0.001);
-miss=rbinom(800,1,exp(miss_logit)/(exp(miss_logit)+1));
-censor=rep(0,800)
+var2 <- abs(rnorm(800,0,1)); treatment <- c(rep(0,400), rep(1,400));
+var1 <- (1/0.85)*var2+2*treatment;
+geneid <- rep(seq_len(50),16);
+sid <- c(rep(seq_len(50),8), rep(seq_len(50)+50,8))
+cov1 <- rWishart(1,df=50, Sigma <- diag(rep(1,50)))
+u <- rnorm(50,0,1);mu <- mvrnorm(n=1, mu=u, cov1[,,1])
+sdd <- rgamma(1, shape=1, scale=1/10);
+for (i in seq_len(800)) {var1[i] <- var1[i]+rnorm(1, mu[geneid[i]], sdd)}
+miss_logit <- var2*(-0.9)+var1*(0.001);
+miss <- rbinom(800, 1, exp(miss_logit)/(exp(miss_logit)+1));
+censor <- rep(0,800)
 for (i in seq_len(800)) {if (var1[i]<0.002) censor[i]=1}
-pdata=data.frame(var1,var2,treatment,miss,censor,geneid,sid);
+pdata <- data.frame(var1, var2, treatment, miss, censor, geneid, sid);
 for ( i in seq_len(800)) 
 {if ((pdata$miss[i]==1) & (pdata$censor[i]==1)) pdata$miss[i]=0};
 for ( i in seq_len(800)) {
@@ -154,7 +154,7 @@ formula_censor=censor~1;
 formula_subject=~treatment;
 response_censorlim=0.002;
 
-model1=mlmc(formula_completed=var1~var2+treatment,
+model1 <- mlmc(formula_completed=var1~var2+treatment,
 formula_missing=miss~var2,
 formula_censor=censor~1,
 formula_subject=~treatment,

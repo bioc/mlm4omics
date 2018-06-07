@@ -94,6 +94,6 @@ to re-parameterise response variable.
 Generate initial values for parameters
 }
 \examples{
-testexmp=setinitvalues(npred=2,np=3,npred_miss=3,npred_sub=2,nmiss=10,
+testexmp <- setinitvalues(npred=2,np=3,npred_miss=3,npred_sub=2,nmiss=10,
 nsid=30)
 }
