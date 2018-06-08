@@ -235,7 +235,7 @@ formula_missing = miss~var2,
 formula_censor = censor~1, formula_subject = ~sid, 
 pdata = pdata, response_censorlim = 0.002, respond_dep_missing = TRUE, 
 pidname = "geneid", sidname = "sid", 
-iterno = 200, chains = 2, savefile = TRUE)
+iterno = 100, chains = 2, savefile = TRUE)
 ```
 
 #### Example 1b-1c. Use a provided informative priors
@@ -278,12 +278,12 @@ least one variable.
 
 #### Example 2a. Use default prior 
 
-```{r example 2a,eval=TRUE}
+```{r example 2a,eval=FALSE}
 model5 <- mlmm(formula_completed=var1~var2+treatment, 
 formula_missing=miss~var2, 
 formula_subject=~sid, pdata=pdata,
 respond_dep_missing=FALSE, pidname="geneid", sidname="sid",
-iterno=100, chains=2, savefile=FALSE)
+iterno=1000, chains=2, savefile=FALSE)
 ```
 
 #### Example 2b-2c. Provide informative priors
