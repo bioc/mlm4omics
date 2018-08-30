@@ -135,7 +135,8 @@ https://github.com/stan-dev/rstan/wiki to install the rstan package firstly.
 ## Use bioconductor as installation source
 
 ```{r installation1,eval=FALSE}
-source("https://bioconductor.org/biocLite.R")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
 BiocInstaller::biocLite("mlm4omics")
 library(mlm4omics)
 ```
