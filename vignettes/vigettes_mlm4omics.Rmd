@@ -137,7 +137,7 @@ https://github.com/stan-dev/rstan/wiki to install the rstan package firstly.
 ```{r installation1,eval=FALSE}
 if (!requireNamespace("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
-BiocInstaller::biocLite("mlm4omics")
+BiocManager::install("mlm4omics")
 library(mlm4omics)
 ```
 
