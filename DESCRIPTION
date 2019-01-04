@@ -1,5 +1,5 @@
 Package: mlm4omics
-Version: 1.1.0
+Version: 1.1.1
 Title: Multilevel Model for Multivariate Responses with Missing Values
 Description:To conduct Bayesian inference regression for responses with
     multilevel explanatory variables and missing values; It uses function from
@@ -32,7 +32,7 @@ Suggests: testthat,
 	roxygen2 (>= 5.0.0) 
 URL: https://doi.org/10.1101/153049
 RoxygenNote: 6.0.1
-biocViews: Bayesian,CopyNumberVariation,Classification,Regression,MassSpectrometry,Proteomics,Software
+biocViews: ImmunoOncology, Bayesian,CopyNumberVariation,Classification,Regression,MassSpectrometry,Proteomics,Software
 bugReport: https://github.com/ireneslzeng/mlmm/issues
 VignetteBuilder: knitr
 SystemRequirements: GNU make
