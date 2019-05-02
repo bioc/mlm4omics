@@ -1,5 +1,5 @@
 Package: mlm4omics
-Version: 1.1.1
+Version: 1.2.0
 Title: Multilevel Model for Multivariate Responses with Missing Values
 Description:To conduct Bayesian inference regression for responses with
     multilevel explanatory variables and missing values; It uses function from
